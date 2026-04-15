@@ -11,78 +11,51 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import pika
-import os
+
 
 class mqConsumerInterface:
     def __init__(
         self, binding_key: str, exchange_name: str, queue_name: str
     ) -> None:
         # Save parameters to class variables
-        self.binding_key = binding_key
-        self.exchange_name = exchange_name
-        self.queue_name = queue_name
 
         # Call setupRMQConnection
-        self.setupRMQConnection()
+        pass
 
     def setupRMQConnection(self) -> None:
         # Set-up Connection to RabbitMQ service
-        self.parameters = pika.ConnectionParameters("localhost")
-        self.connection = pika.BlockingConnection(self.parameters)
 
         # Establish Channel
-        self.channel = self.connection.channel()
 
         # Create Queue if not already present
-        if self.queue_name:
-            self.channel.queue_declare(queue=self.queue_name)
 
         # Create the exchange if not already present
-        if self.exchange_name:
-            self.channel.exchange_declare(
-                exchange=self.exchange_name, exchange_type="topic"
-            )
 
         # Bind Binding Key to Queue on the exchange
-        if self.exchange_name and self.queue_name and self.binding_key:
-            self.channel.queue_bind(
-                exchange=self.exchange_name,
-                queue=self.queue_name,
-                routing_key=self.binding_key,
-            )
-
 
         # Set-up Callback function for receiving messages
-            self.channel.basic_consume(
-                queue=self.queue_name, on_message_callback=self.on_message_callback
-            )
-
+        pass
 
     def on_message_callback(
         self, channel, method_frame, header_frame, body
     ) -> None:
         # Acknowledge message
-        channel.basic_ack(delivery_tag=method_frame.delivery_tag)
 
         #Print message (The message is contained in the body parameter variable)
-        print(f"Received message: {body.decode()}")
+
+        pass
 
     def startConsuming(self) -> None:
         # Print " [*] Waiting for messages. To exit press CTRL+C"
 
         # Start consuming messages
-        print(" [*] Waiting for messages. To exit press CTRL+C")
-        self.channel.start_consuming()
-
-
+        pass
+    
     def __del__(self) -> None:
         # Print "Closing RMQ connection on destruction"
-        print("Closing RMQ connection on destruction")
-
+        
         # Close Channel
-        self.channel.close()
 
         # Close Connection
-        self.connection.close()
-
+        
+        pass
